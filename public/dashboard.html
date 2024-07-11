@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Anton Admin</title>
+    <link rel="stylesheet" href="./ resources/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="./resources/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="./resources/css/style.css">
+    <link rel="shortcut icon" href="favicon.ico" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <!-- Sidebar content -->
+        </nav>
+        <div class="container-fluid page-body-wrapper">
+            <nav class="navbar p-0 fixed-top d-flex flex-row">
+                <!-- Navbar content -->
+            </nav>
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Lista de Usuarios</h4>
+                                    <div class="table-responsive">
+                                        <div class="modal fade" id="editarUsuarioModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="editarUsuarioModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editarUsuarioModalLabel">Editar
+                                                            Usuario</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="editarUsuarioForm">
+                                                            <input type="hidden" id="userId">
+                                                            <div class="form-group">
+                                                                <label for="nombre">Nombre</label>
+                                                                <input type="text" class="form-control" id="nombre">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="apellido">Apellido</label>
+                                                                <input type="text" class="form-control" id="apellido">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="dni">DNI</label>
+                                                                <input type="text" class="form-control" id="dni">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="email">Email</label>
+                                                                <input type="email" class="form-control" id="email">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="rol">Rol</label>
+                                                                <input type="text" class="form-control" id="rol">
+                                                            </div>
+                                                            <button type="submit"
+                                                                class="btn btn-primary">Actualizar</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="user-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th> ID </th>
+                                                        <th> Nombre </th>
+                                                        <th> Apellido </th>
+                                                        <th> DNI </th>
+                                                        <th> Email </th>
+                                                        <th> Rol </th>
+                                                        <th> Acciones </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="user-list">
+                                                    <!-- Filas de usuarios serán añadidas aquí -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="footer">
+                        <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright ©
+                                Marcelo Ruben Anton 2024</span>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./resources/vendors/js/vendor.bundle.base.js"></script>
+    <script src="./resources/js/settings.js"></script>
+    <script src="./resources/js/dashboard.js" type="module"></script>
+</body>
+
+</html>

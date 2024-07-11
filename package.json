@@ -1,0 +1,24 @@
+{
+  "name": "tpfinal",
+  "version": "0.1.0",
+  "description": "Fullstack NodeJS Codo a Codo",
+  "main": "index.js",
+  "scripts": {
+    "type": "module",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [],
+  "author": "Marcelo Anton",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "5.1.1",
+    "bcryptjs": "2.4.3",
+    "dotenv": "16.4.5",
+    "express": "4.19.2",
+    "express-session": "1.18.0",
+    "init": "0.1.2",
+    "jsonwebtoken": "9.0.2",
+    "muller": "1.1.0",
+    "mysql2": "3.10.0"
+  }
+}
