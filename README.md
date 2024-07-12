@@ -1,4 +1,4 @@
-# grupo14fullstacknodejs
+# Marcelo Ruben Anton TP Final
 
 Estas practicas se realizaron por el Grupo 14 del curso de FullStack con NodeJS del programa Codo a Codo
 
@@ -22,7 +22,7 @@ Estas practicas se realizaron por el Grupo 14 del curso de FullStack con NodeJS 
 ## Installation
 
 - En el caso del TPO 6 debes tener instalada las uientes dependencias de [NodeJS v20.14LTS](https://nodejs.org/en)+
-  - `npm i express express-session dotenv mysql2 muller bcryptjs jsonwebtoken `
+  - `npm i express express-session dotenv mysql2 muller bcryptjs`
 
 ## Usage
 
