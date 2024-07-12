@@ -114,10 +114,12 @@
                 <ul class="navbar-nav w-100">
                     <li class="nav-item w-100">
                         <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                            <input type="text" class="form-control" placeholder="Buscar..">
+                            <input type="text" class="form-control" id="searchInput"
+                                placeholder="Escribe lo que deseas buscar en la tabla">
                         </form>
                     </li>
                 </ul>
+
                 <ul class="navbar-nav navbar-nav-right">
                     <li class="nav-item dropdown d-none d-lg-block">
                         <button class="nav-link btn btn-success create-new-button" data-toggle="modal"
@@ -417,7 +419,8 @@
                                                     <h5 class="modal-title" id="confirmarEliminarModalLabel">Confirmar
                                                         Eliminación</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                                        aria-label="Close"
+                                                        id="cerrarConfirmarEliminarModalBtn"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <p>¿Estás seguro de que deseas eliminar al usuario:</p>
@@ -425,16 +428,16 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Cancelar</button>
+                                                        data-bs-dismiss="modal"
+                                                        id="cancelarConfirmarEliminarModalBtn">Cancelar</button>
                                                     <button type="button" class="btn btn-danger"
                                                         id="confirmarEliminarBtn">Eliminar</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- FIN -- Modal de confirmación para eliminar usuario -- FIN -->
 
-                                    <!-- INICIO -- Toast para mensajes de éxito o error -- INICIO -->
+                                    <!-- Toast para mensajes de éxito o error -->
                                     <div class="toast align-items-center text-white bg-success border-0" role="alert"
                                         aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
                                         <div class="d-flex">
@@ -442,10 +445,10 @@
                                                 Usuario actualizado con éxito.
                                             </div>
                                             <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                                                data-bs-dismiss="toast" aria-label="Cerrar"></button>
+                                                data-bs-dismiss="toast" aria-label="Cerrar"
+                                                id="cerrarToastBtn"></button>
                                         </div>
                                     </div>
-                                    <!-- FIN -- Toast para mensajes de éxito o error -- FIN -->
 
                                     <div class="table-responsive">
                                         <table class="table table-striped" id="user-table">
@@ -488,7 +491,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./resources/vendors/js/vendor.bundle.base.js"></script>
     <script src="./resources/js/settings.js"></script>
-    <script src="./resources/js/dashboard.js" type="module"></script>
+    <script type="module" src="./resources/js/apiUtils.js"></script>
+    <script type="module" src="./resources/js/dashboard.js"></script>
 </body>
 
 </html>

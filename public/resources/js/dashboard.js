@@ -20,9 +20,69 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagenInput = document.getElementById('imagen');
     const rolInput = document.getElementById('rol');
 
+    // Elementos del modal de confirmación de eliminación
+    const confirmarEliminarModal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+    const usuarioAEliminar = document.getElementById('usuarioAEliminar');
+    const cancelarConfirmarEliminarModalBtn = document.getElementById('cancelarConfirmarEliminarModalBtn');
+    const cerrarConfirmarEliminarModalBtn = document.getElementById('cerrarConfirmarEliminarModalBtn');
+    const confirmarEliminarBtn = document.getElementById('confirmarEliminarBtn');
+    const cerrarToastBtn = document.getElementById('cerrarToastBtn');
+
+    let usuarioIdAEliminar = null;
+
     // Toast de Bootstrap para mensajes de éxito o error
     const toastEl = document.querySelector('.toast');
     const toast = new bootstrap.Toast(toastEl);
+
+
+    // Capturamos el evento de entrada en el campo de búsqueda
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function () {
+        const searchText = searchInput.value.trim().toLowerCase();
+
+        // Obtenemos todas las filas de la tabla de usuarios
+        const rows = userTableBody.querySelectorAll('tr');
+
+        // Iteraramo sobre cada fila y mostrar/ocultar según el texto de búsqueda
+        rows.forEach(row => {
+            const cells = row.getElementsByTagName('td');
+            let found = false;
+
+            // Iteraramos sobre cada celda de la fila y buscar el texto
+            for (let i = 0; i < cells.length; i++) {
+                const cellText = cells[i].textContent.trim().toLowerCase();
+                if (cellText.includes(searchText)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            // Mostramos o ocultamos la fila según la búsqueda
+            if (found) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+
+    // Modal de confirmación para eliminar usuario
+    cancelarConfirmarEliminarModalBtn.addEventListener('click', function () {
+        const confirmarEliminarModal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+        confirmarEliminarModal.hide();
+    });
+
+    cerrarConfirmarEliminarModalBtn.addEventListener('click', function () {
+        const confirmarEliminarModal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+        confirmarEliminarModal.hide();
+    });
+
+    // Toast para mensajes de éxito o error
+    cerrarToastBtn.addEventListener('click', function () {
+        const toast = new bootstrap.Toast(document.querySelector('.toast'));
+        toast.hide();
+    });
 
     // Función para cargar la lista de usuarios desde el backend
     async function fetchUserList() {
@@ -43,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Limpiar tabla antes de agregar nuevos datos
             userTableBody.innerHTML = '';
 
-            // Iterar sobre cada usuario y agregarlo a la tabla
+            // Recorrer la lista de usuarios y agregarlos a la tabla
             data.forEach(user => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -74,78 +134,42 @@ document.addEventListener('DOMContentLoaded', function () {
     // Llamar a la función para cargar la lista de usuarios al cargar la página
     fetchUserList();
 
-    // Función para crear un nuevo usuario
-    async function crearUsuario(event) {
-        event.preventDefault();
-
-        const nuevoUsuario = {
-            nombre: nombreCrear.value,
-            apellido: apellidoCrear.value,
-            dni: dniCrear.value,
-            nombre_usuario: nombreUsuarioCrear.value,
-            email: emailCrear.value,
-            contrasena: contrasenaCrear.value,
-            numero_telefono: numeroTelefonoCrear.value,
-            numero_celular: numeroCelularCrear.value,
-            direccion: direccionCrear.value,
-            ciudad: ciudadCrear.value,
-            provincia: provinciaCrear.value,
-            pais: paisCrear.value,
-            imagen: imagenCrear.value,
-            rol: rolCrear.value,
-        };
-
+    // Función para eliminar un usuario
+    async function eliminarUsuario(userId) {
         try {
-            const response = await fetch('/api/users', {
-                method: 'POST',
+            const response = await fetch(`/api/users/${userId}`, {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(nuevoUsuario),
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error al crear el usuario:', errorData); // Depuración
-                throw new Error('Error al crear el usuario');
+                throw new Error('Error al eliminar el usuario');
             }
 
-            console.log('Usuario creado con éxito'); // Depuración
-
-            // Limpiar el formulario después de la creación
-            limpiarFormularioCrear();
-
-            // Ocultar el modal de creación si está abierto
-            $(crearUsuarioModal).modal('hide');
-
-            // Recargar la lista de usuarios
+            // Recargar la lista de usuarios después de eliminar
             fetchUserList();
         } catch (error) {
             console.error('Error:', error.message);
         }
     }
 
-    // Función para limpiar el formulario de creación después de la creación
-    function limpiarFormularioCrear() {
-        nombreCrear.value = '';
-        apellidoCrear.value = '';
-        dniCrear.value = '';
-        nombreUsuarioCrear.value = '';
-        emailCrear.value = '';
-        contrasenaCrear.value = '';
-        numeroTelefonoCrear.value = '';
-        numeroCelularCrear.value = '';
-        direccionCrear.value = '';
-        ciudadCrear.value = '';
-        provinciaCrear.value = '';
-        paisCrear.value = '';
-        imagenCrear.value = '';
-        rolCrear.value = '';
+    // Función para confirmar la eliminación del usuario
+    window.confirmarEliminarUsuario = function (userId, nombre, apellido) {
+        usuarioIdAEliminar = userId;
+        usuarioAEliminar.textContent = `${apellido}, ${nombre}`;
+        confirmarEliminarModal.show();
     }
 
-    // Event listener para el formulario de creación de usuario
-    crearUsuarioForm.addEventListener('submit', crearUsuario);
-
+    // Event listener para el botón de confirmación de eliminación en el modal
+    confirmarEliminarBtn.addEventListener('click', async function () {
+        if (usuarioIdAEliminar !== null) {
+            await eliminarUsuario(usuarioIdAEliminar);
+            usuarioIdAEliminar = null;
+            confirmarEliminarModal.hide();
+        }
+    });
 
     // Función para abrir el modal de edición de usuario
     window.abrirEditarUsuarioModal = async function (userId) {
@@ -220,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error('Error al actualizar el usuario:', errorData); // Depuramos
+                console.error('Error al actualizar el usuario:', errorData);
                 throw new Error('Error al actualizar el usuario');
             }
 
@@ -229,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
             toastEl.classList.add('bg-success');
             toast.show();
 
-            console.log('Usuario actualizado con éxito'); // Depuramos
+            console.log('Usuario actualizado con éxito');
 
             // Ocultar el modal
             $(editarUsuarioModal).modal('hide');
@@ -249,78 +273,66 @@ document.addEventListener('DOMContentLoaded', function () {
     // Asignar el evento submit al formulario de edición
     editarUsuarioForm.addEventListener('submit', actualizarUsuario);
 
-    // Seguimos con las demas funciones para actualizar el usuario
-});
+    // Función para crear un nuevo usuario
+    async function crearUsuario(event) {
+        event.preventDefault();
 
-// Función para eliminar un usuario
-async function eliminarUsuario(userId) {
-    try {
-        const response = await fetch(`/api/users/${userId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Error al eliminar el usuario');
-        }
-
-        // Recargar la lista de usuarios después de eliminar
-        fetchUserList();
-    } catch (error) {
-        console.error('Error:', error.message);
-    }
-};
-// Función para hacer una solicitud al servidor
-function fetchData(url, options = {}) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open(options.method || 'GET', url);
-
-        // Configurar cabeceras si es necesario
-        if (options.headers) {
-            for (const [key, value] of Object.entries(options.headers)) {
-                xhr.setRequestHeader(key, value);
-            }
-        }
-
-        xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr.response);
-            } else {
-                reject(xhr.statusText);
-            }
+        const nuevoUsuario = {
+            nombre: nombreCrear.value,
+            apellido: apellidoCrear.value,
+            dni: dniCrear.value,
+            nombre_usuario: nombreUsuarioCrear.value,
+            email: emailCrear.value,
+            contrasena: contrasenaCrear.value,
+            numero_telefono: numeroTelefonoCrear.value,
+            numero_celular: numeroCelularCrear.value,
+            direccion: direccionCrear.value,
+            ciudad: ciudadCrear.value,
+            provincia: provinciaCrear.value,
+            pais: paisCrear.value,
+            imagen: imagenCrear.value,
+            rol: rolCrear.value,
         };
 
-        xhr.onerror = () => reject(xhr.statusText);
+        try {
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(nuevoUsuario),
+            });
 
-        xhr.send(options.body);
-    });
-}
-
-// Función para verificar la sesión y manejar redirecciones
-function checkSessionAndFetchData(url, options = {}) {
-    fetchData(url, options)
-        .then(response => {
-            // Procesar la respuesta exitosa
-            //console.log('Respuesta exitosa:', response);
-        })
-        .catch(error => {
-            // Manejar errores de red o errores HTTP
-            console.error('Error al procesar la solicitud:', error);
-            if (error === 'Unauthorized') {
-                // Redirigir al usuario a la página de inicio de sesión o a otra página
-                window.location.href = '/index.html'; // Cambia esto según tu configuración
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error al crear el usuario:', errorData);
+                throw new Error('Error al crear el usuario');
             }
-        });
-}
 
+            // Mostrar el toast de éxito
+            toastEl.classList.remove('bg-danger');
+            toastEl.classList.add('bg-success');
+            toast.show();
 
-// Vemos si tenemos acceso a nuestro fech
-checkSessionAndFetchData('/api/users', {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
+            console.log('Usuario creado con éxito');
+
+            // Ocultar el modal
+            $(crearUsuarioModal).modal('hide');
+
+            // Recargar la lista de usuarios
+            fetchUserList();
+        } catch (error) {
+            console.error('Error:', error.message);
+
+            // Mostrar el toast de error
+            toastEl.classList.remove('bg-success');
+            toastEl.classList.add('bg-danger');
+            toast.show();
+        }
     }
-}); 
+
+    // Asignar el evento submit al formulario de creación
+    crearUsuarioForm.addEventListener('submit', crearUsuario);
+
+});
+
