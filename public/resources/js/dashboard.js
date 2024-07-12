@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagenInput = document.getElementById('imagen');
     const rolInput = document.getElementById('rol');
 
+    // Toast de Bootstrap para mensajes de éxito o error
+    const toastEl = document.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastEl);
+
     // Función para cargar la lista de usuarios desde el backend
     async function fetchUserList() {
         try {
@@ -57,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${user.rol}</td>
                     <td>
                         <button class="mdi mdi-grease-pencil btn btn-sm btn-warning" onclick="abrirEditarUsuarioModal(${user.id_usuario})"></button>
-                        <button class="mdi mdi-delete-forever btn btn-sm btn-danger" onclick="eliminarUsuario(${user.id_usuario}, '${user.apellido}', '${user.nombre}')"></button>
+                        <button class="mdi mdi-delete-forever btn btn-sm btn-danger" onclick="confirmarEliminarUsuario(${user.id_usuario}, '${user.apellido}', '${user.nombre}')"></button>
                     </td>
                 `;
                 userTableBody.appendChild(tr);
@@ -216,11 +220,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error('Error al actualizar el usuario:', errorData); // Depuración
+                console.error('Error al actualizar el usuario:', errorData); // Depuramos
                 throw new Error('Error al actualizar el usuario');
             }
 
-            console.log('Usuario actualizado con éxito'); // Depuración
+            // Mostrar el toast de éxito
+            toastEl.classList.remove('bg-danger');
+            toastEl.classList.add('bg-success');
+            toast.show();
+
+            console.log('Usuario actualizado con éxito'); // Depuramos
 
             // Ocultar el modal
             $(editarUsuarioModal).modal('hide');
@@ -229,39 +238,40 @@ document.addEventListener('DOMContentLoaded', function () {
             fetchUserList();
         } catch (error) {
             console.error('Error:', error.message);
+
+            // Mostrar el toast de error
+            toastEl.classList.remove('bg-success');
+            toastEl.classList.add('bg-danger');
+            toast.show();
         }
     }
 
     // Asignar el evento submit al formulario de edición
     editarUsuarioForm.addEventListener('submit', actualizarUsuario);
 
-    // Función para eliminar un usuario
-    window.eliminarUsuario = async function (userId, userApellido, userNombre) {
-        const confirmar = confirm(`¿Estás seguro de que deseas eliminar al usuario: ${userApellido}, ${userNombre}?`);
-
-        if (!confirmar) {
-            return;
-        }
-        try {
-            const response = await fetch(`/api/users/${userId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al eliminar el usuario');
-            }
-
-            // Recargar la lista de usuarios después de eliminar
-            fetchUserList();
-        } catch (error) {
-            console.error('Error:', error.message);
-        }
-    }
+    // Seguimos con las demas funciones para actualizar el usuario
 });
 
+// Función para eliminar un usuario
+async function eliminarUsuario(userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al eliminar el usuario');
+        }
+
+        // Recargar la lista de usuarios después de eliminar
+        fetchUserList();
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+};
 // Función para hacer una solicitud al servidor
 function fetchData(url, options = {}) {
     return new Promise((resolve, reject) => {
