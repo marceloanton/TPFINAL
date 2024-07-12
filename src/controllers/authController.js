@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const db = require('../config/database');
 
 // Función para autenticar sin token JWT
-// Función para autenticar sin token JWT
 const login = async (req, res) => {
     const { nombreUsuarioOEmail, contrasena } = req.body;
 

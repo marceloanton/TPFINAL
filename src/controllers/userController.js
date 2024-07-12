@@ -53,10 +53,19 @@ const updateUser = async (req, res) => {
     const values = [nombre, apellido, dni, nombre_usuario, email, hashedPassword, numero_telefono, numero_celular, direccion, ciudad, provincia, pais, imagen, rol, id];
 
     db.query(query, values, (err, result) => {
-      if (err) return res.status(500).json({ message: 'Error al actualizar el usuario', err });
+      if (err) {
+        console.error('Error al actualizar el usuario:', err);
+        return res.status(500).json({ message: 'Error al actualizar el usuario', err });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
       res.status(200).json({ message: 'Usuario actualizado' });
     });
   } catch (err) {
+    console.error('Error al hashear la contraseña:', err);
     res.status(500).json({ message: 'Error al hashear la contraseña', err });
   }
 };
